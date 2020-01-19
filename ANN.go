@@ -104,6 +104,24 @@ func (l *Layer) print() {
 	}
 }
 
+func (l *Layer) printDotLabels(layer int) {
+
+	// Print the labels for each neuron
+	for i:= 0; i < len(l.neurons); i++ {
+		fmt.Printf("L%dN%d [label=\"L%dN%d: \\nBias: %f\"]\n", layer, i, layer, i, l.neurons[i].inputBias)
+	}
+}
+
+func (l *Layer) printDotStructure(layer int) {
+
+	// Print the labels for each neuron
+	fmt.Printf("{ rank=same ")
+	for i:= 0; i < len(l.neurons); i++ {
+		fmt.Printf("L%dN%d ", layer, i)
+	}
+	fmt.Printf("} ")
+}
+
 func (l *Layer) generateNeurons(){
 	for i := 0; i < l.neuronCount; i++{
 		var n Neuron
@@ -145,6 +163,14 @@ func (n *Neuron) print() {
 		fmt.Printf("\t| Input Weight: [%d] = %f\n", i, n.inputWeights[i])
 	}
 	fmt.Println("\t|_______________________________________\n")
+}
+
+func (n *Neuron) printDot(layer int) {
+
+	// Print the labels for each neuron
+	for i:= 0; i < len(n.inputWeights); i++ {
+		fmt.Printf("L%dN%d [label=\"Input %d: \nBias: %f\"]\n", layer, i, i, n.inputWeights[i])
+	}
 }
 
 func (n *Neuron) generate (size int){
@@ -224,7 +250,45 @@ func main(){
 	*/
 	//lay.mutateNeurons()
 
+<<<<<<< HEAD
 	//lay.print()
+=======
+	lay.mutateNeurons()
+
+	lay.print()
+
+	// ================================================
+	// beginning of graph structure:
+	fmt.Printf("digraph G { node [shape=box fontsize=8] edge [fontsize=8] \n")
+
+	// First print out labels:
+	// run for the input layer
+	//inputlayer.printDotLabels(1)
+
+	// run for the output layer
+	//outputlayer.printDotLabels(1)
+
+	// loop for each hidden layer:
+	lay.printDotLabels(1)
+
+
+	// Now print out structure:
+	// run for input layer:
+	//inputlayer.printDotStructure(1)
+	fmt.Printf(" -> \n")
+
+	// then loop again for each hidden layer:
+	lay.printDotStructure(1)
+	fmt.Printf(" -> \n")
+
+	// run for the output layer
+	//outputlayer.printDotStructure(1)
+
+	// close it up:
+	fmt.Printf("}\n")
+	// ================================================
+}
+>>>>>>> 3f7763a183e866d025da9db0dfabbec36e547805
 	/*n.mutate([2]float64{1.0,10.0})
 	log.Println(n.calculate([]float64{1.0}))
 	n.mutate([2]float64{1.0,10.0})
