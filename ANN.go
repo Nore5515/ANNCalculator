@@ -35,6 +35,7 @@ func (l *Layer) generateNeurons(){
 	var array []Neuron
 	for i := 0; i < l.neuronCount; i++{
 		var n Neuron
+		n.generate(len(l.inArray))
 		array = append(array, n)
 	}
 }
@@ -42,6 +43,12 @@ func (l *Layer) generateNeurons(){
 func (l *Layer) mutateNeurons(){
 	for i := 0; i < len(l.neurons); i++{
 		l.neurons[i].mutate([2]float64 {l.mutationChance, l.mutationRange})
+	}
+}
+
+func (l *Layer) calculateNeurons(){
+	for i := 0; i < len(l.neurons); i++{
+		l.outArray = append(l.outArray, l.neurons[i].calculate(l.inArray))
 	}
 }
 
@@ -75,13 +82,12 @@ func (n *Neuron) mutate (stuff [2]float64) {	//for stuff, it's always an array o
 			n.inputWeights[i] = sigmoid(n.inputWeights[i] * (r.Float64() * stuff[1]))
 		}
 	}
-	//log.Println(r.Float64())
 }
 
 func (n *Neuron) calculate (inputArray []float64) float64 {
 	x := 0.0;	//total sum of all input*weight combos
-	log.Println(inputArray);
-	log.Println(n.inputWeights);
+	//log.Println(inputArray);
+	//log.Println(n.inputWeights);
 	for i := 0; i < len(inputArray); i++ {
 		//log.Print(i);
 		x += inputArray[i] * n.inputWeights[i];
@@ -95,7 +101,33 @@ func main(){
 	var n Neuron
 	//n.inputWeights = make([]float64, 5);
 	n.generate(5)
-	log.Println(n.calculate([]float64{1.0, 1.0, 1.0, 1.0, 1.0}))
+	//log.Println(n.calculate([]float64{1.0, 1.0, 1.0, 1.0, 1.0}))
+
+	var n1 Neuron
+	var n2 Neuron
+	var n3 Neuron
+	n1.generate(5);
+	n2.generate(5);
+	n3.generate(5);
+
+	lay := Layer{
+		mutationChance:	1.0,
+		mutationRange: 10.0,
+		neuronCount: 6,
+		neurons: []Neuron{n1,n2,n3},
+		inArray: []float64{1.0,1.0,1.0,1.0,1.0},
+		outArray: []float64{},
+	}
+
+	log.Println(lay.inArray)
+	//log.Println(lay.outArray)
+	log.Println("Calculating...");
+	lay.calculateNeurons()
+	log.Println(lay.outArray)
+}
+
+
+
 
 /*	var n1 Neuron
 	var n2 Neuron
@@ -110,7 +142,6 @@ func main(){
 	}
 	log.Println(l, lay)
 */
-}
 
 
 
