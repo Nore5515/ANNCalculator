@@ -40,13 +40,13 @@ func (l *Layer) print() {
 
 	fmt.Printf("  Input Array: [ ")
 	for in:= 0; in < len(l.inArray); in++ {
-		fmt.Printf("%d ", l.inArray[in])
+		fmt.Printf("%f ", l.inArray[in])
 	}
 	fmt.Printf("]\n")
 
 	fmt.Printf("  Output Array: [ ")
 	for out := 0; out < len(l.outArray); out++ {
-		fmt.Printf("%d ", l.outArray[out])
+		fmt.Printf("%f ", l.outArray[out])
 	}
 	fmt.Printf("]\n")
 
@@ -57,11 +57,10 @@ func (l *Layer) print() {
 }
 
 func (l *Layer) generateNeurons(){
-	var array []Neuron
 	for i := 0; i < l.neuronCount; i++{
 		var n Neuron
 		n.generate(len(l.inArray))
-		array = append(array, n)
+		l.neurons = append(l.neurons, n)
 	}
 }
 
@@ -137,28 +136,33 @@ func main(){
 	n.generate(5)
 	//log.Println(n.calculate([]float64{1.0, 1.0, 1.0, 1.0, 1.0}))
 
-	var n1 Neuron
+	/*var n1 Neuron
 	var n2 Neuron
 	var n3 Neuron
 	n1.generate(5);
 	n2.generate(5);
 	n3.generate(5);
-
+	*/
 	lay := Layer{
 		mutationChance:	1.0,
 		mutationRange: 10.0,
 		neuronCount: 6,
-		neurons: []Neuron{n1,n2,n3},
+		neurons: []Neuron{},
 		inArray: []float64{1.0,1.0,1.0,1.0,1.0},
 		outArray: []float64{},
 	}
+
+	lay.generateNeurons()
 
 	log.Println(lay.inArray)
 	//log.Println(lay.outArray)
 	log.Println("Calculating...");
 	lay.calculateNeurons()
-	log.Println(lay.outArray)
+	lay.print()
 
+	lay.mutateNeurons()
+
+	lay.print()
 }
 	/*n.mutate([2]float64{1.0,10.0})
 	log.Println(n.calculate([]float64{1.0}))
