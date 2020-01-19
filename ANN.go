@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"log"
 	"math/rand"
@@ -29,6 +30,30 @@ type LayerInterface interface{
 	generateNeurons()				//create neuronCount neruons to add to the array
 	mutateNeurons()		//issue the command to mutate all nodes
 	calculateNeurons()	//issue the command to calculate all nodes
+}
+
+func (l *Layer) print() {
+	fmt.Printf("Layer: \n")
+	fmt.Printf("  NCount: [%d]: \n", l.neuronCount)
+	fmt.Printf("  Mutation Chance: [%f]: \n", l.mutationChance)
+	fmt.Printf("  Mutation Range: [%f]: \n", l.mutationRange)
+
+	fmt.Printf("  Input Array: [ ")
+	for in:= 0; in < len(l.inArray); in++ {
+		fmt.Printf("%d ", l.inArray[in])
+	}
+	fmt.Printf("]\n")
+
+	fmt.Printf("  Output Array: [ ")
+	for out := 0; out < len(l.outArray); out++ {
+		fmt.Printf("%d ", l.outArray[out])
+	}
+	fmt.Printf("]\n")
+
+	for i:= 0; i < len(l.neurons); i++ {
+		fmt.Printf("  Neuron: [%d]: \n", i)
+		l.neurons[i].print()
+	}
 }
 
 func (l *Layer) generateNeurons(){
@@ -63,6 +88,15 @@ type NeuronInterface interface {
 	// this returns the sigmoid'd output of the neuron, given the input array
 	calculate([]float64) float64
 	generate(int)
+}
+
+func (n *Neuron) print() {
+	fmt.Println("\t========================================")
+	fmt.Println("\t| Neuron Bias: ", n.inputBias)
+	for i:= 0; i < len(n.inputWeights); i++ {
+		fmt.Printf("\t| Input Weight: [%d] = %f\n", i, n.inputWeights[i])
+	}
+	fmt.Println("\t|_______________________________________\n")
 }
 
 func (n *Neuron) generate (size int){
@@ -124,28 +158,8 @@ func main(){
 	log.Println("Calculating...");
 	lay.calculateNeurons()
 	log.Println(lay.outArray)
+
 }
-
-
-
-
-/*	var n1 Neuron
-	var n2 Neuron
-	var n3 Neuron
-
-	var l Layer //{mutationChance:1.0, mutationRange:10.0, neuronCount:6, neurons:[0]Neuron, inArray:[0]float64, outArray:[0]float64}
-	lay := Layer{
-		mutationChance:	1.0,
-		mutationRange: 10.0,
-		neuronCount: 6,
-		neurons: []Neuron{n1,n2,n3},
-	}
-	log.Println(l, lay)
-*/
-
-
-
-
 	/*n.mutate([2]float64{1.0,10.0})
 	log.Println(n.calculate([]float64{1.0}))
 	n.mutate([2]float64{1.0,10.0})
