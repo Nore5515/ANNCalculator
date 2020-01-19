@@ -6,7 +6,6 @@ import (
 	"log"
 	"math/rand"
 	"time"
-	/*"fmt"*/
 )
 
 func sigmoid(value float64) float64 {
@@ -15,6 +14,55 @@ func sigmoid(value float64) float64 {
 
 func init(){
 
+}
+
+type ANN struct {
+	inputs					Layer		//generates on run
+	output					Layer
+	hiddenLayers		[]Layer
+	mutationChance	float64
+	mutationRange		float64
+	// layerCount			int
+}
+
+type ANNInterface interface{
+	run([]float64)
+	mutateLayers()
+	calculateLayers()
+	addHiddenLayers([]int)	//generate Layers based on an array of neurons in each layer
+	removeHiddenLayer(int)	//remove specific layer
+}
+
+func (a *ANN) run(ANNinputs []float64){
+	a.inputs.mutationChance = a.mutationChance
+	a.inputs.mutationRange = a.mutationRange
+	a.inputs.neuronCount = len(ANNinputs)
+	a.inputs.inArray = ANNinputs
+	a.inputs.generateNeurons()
+
+	for i := 0; i < len(a.hiddenLayers); i++{
+		if i == 0{
+			a.hiddenLayers[i].inArray = a.inputs.calculateNeurons()
+		} else{
+			//a.hiddenLayers[i].inArray = a.hiddenLayers[i-1].calculateNeurons()
+		}
+	}
+
+
+
+}
+
+func (a *ANN) addHiddenLayers(array []int){
+	for i := 0; i < len(array); i++{
+		var l Layer
+		//log.Println("Before", l.mutationChance, l.mutationRange)
+		l.neuronCount = array[i]
+		l.mutationChance = a.mutationChance
+		l.mutationRange = a.mutationRange
+		l.generateNeurons()
+		//log.Println("After", l.mutationChance, l.mutationRange)
+		a.hiddenLayers = append (a.hiddenLayers, l)
+	}
 }
 
 type Layer struct {
@@ -70,10 +118,11 @@ func (l *Layer) mutateNeurons(){
 	}
 }
 
-func (l *Layer) calculateNeurons(){
+func (l *Layer) calculateNeurons() []float64{
 	for i := 0; i < len(l.neurons); i++{
 		l.outArray = append(l.outArray, l.neurons[i].calculate(l.inArray))
 	}
+	return l.outArray
 }
 
 // A Neuron is a single element within an ANN
@@ -131,10 +180,23 @@ func (n *Neuron) calculate (inputArray []float64) float64 {
 }
 
 func main(){
-	var n Neuron
-	//n.inputWeights = make([]float64, 5);
-	n.generate(5)
-	//log.Println(n.calculate([]float64{1.0, 1.0, 1.0, 1.0, 1.0}))
+
+	var a ANN
+	a.mutationChance = 1.0
+	a.mutationRange = 10.0
+	a.addHiddenLayers([]int{1,2,3})
+	a.run([]float64{1.0, 1.0})
+	log.Println("0:",a.hiddenLayers[0])
+	log.Println("1:",a.hiddenLayers[1])
+	log.Println("2:",a.hiddenLayers[2])
+
+}
+
+//var n Neuron
+//n.inputWeights = make([]float64, 5);
+//n.generate(5)
+//log.Println(n.calculate([]float64{1.0, 1.0, 1.0, 1.0, 1.0}))
+
 
 	/*var n1 Neuron
 	var n2 Neuron
@@ -142,7 +204,7 @@ func main(){
 	n1.generate(5);
 	n2.generate(5);
 	n3.generate(5);
-	*/
+
 	lay := Layer{
 		mutationChance:	1.0,
 		mutationRange: 10.0,
@@ -154,16 +216,15 @@ func main(){
 
 	lay.generateNeurons()
 
-	log.Println(lay.inArray)
+	//log.Println(lay.inArray)
 	//log.Println(lay.outArray)
 	log.Println("Calculating...");
 	lay.calculateNeurons()
 	lay.print()
+	*/
+	//lay.mutateNeurons()
 
-	lay.mutateNeurons()
-
-	lay.print()
-}
+	//lay.print()
 	/*n.mutate([2]float64{1.0,10.0})
 	log.Println(n.calculate([]float64{1.0}))
 	n.mutate([2]float64{1.0,10.0})
